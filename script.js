@@ -15,17 +15,24 @@ function readFileToJson(filename) {
   // leemos el range de las celdas usadas que hay en la sheet
   const range = xlsx.utils.decode_range(ws['!ref']);
   //   console.log(range) ---> { s: { c: 0, r: 0 }, e: { c: 8, r: 43 } }
+  // loop de guías entregas
+  let guias = [];
   for (let rowNum = rangeAwb.s.r; rowNum <= range.e.r; rowNum++) {
     const awb = ws[xlsx.utils.encode_cell({ r: rowNum, c: 1 })];
     if (awb === undefined) {
     } else {
-      console.log(awb);
+      //   console.log(awb.v);
+      guias.push(awb.v);
     }
+    // return guias;
   }
+  const awbArray = guias.flat(2);
+  console.log(awbArray);
   // le pasamos la data a la sheet
-  const data = xlsx.utils.sheet_to_json(ws);
+  const data = xlsx.utils.aoa_to_sheet();
+  //   console.log(data);
   // returneamos la data
-  return data;
+  return awbArray;
 }
 
 let combinedData = [];
