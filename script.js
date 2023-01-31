@@ -2,11 +2,29 @@ const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
 
+const rangeAwb = { s: { c: 1, r: 23 }, e: { c: 1, r: 38 } };
+const rangePas = { s: { c: 1, r: 5 }, e: { c: 1, r: 19 } };
+
 function readFileToJson(filename) {
+  // lee el archivo que viene de files
   const wb = xlsx.readFile(filename, { cellDates: true });
+  // declaramos la primer sheet
   const firsTabName = wb.SheetNames[0];
+  // agarramos la sheet
   const ws = wb.Sheets[firsTabName];
+  // leemos el range de las celdas usadas que hay en la sheet
+  const range = xlsx.utils.decode_range(ws['!ref']);
+  //   console.log(range) ---> { s: { c: 0, r: 0 }, e: { c: 8, r: 43 } }
+  for (let rowNum = rangeAwb.s.r; rowNum <= range.e.r; rowNum++) {
+    const awb = ws[xlsx.utils.encode_cell({ r: rowNum, c: 1 })];
+    if (awb === undefined) {
+    } else {
+      console.log(awb);
+    }
+  }
+  // le pasamos la data a la sheet
   const data = xlsx.utils.sheet_to_json(ws);
+  // returneamos la data
   return data;
 }
 
@@ -28,12 +46,19 @@ files.forEach((file) => {
     const data = readFileToJson(fullFilePath);
     // combinar la data en un solo array
     combinedData = combinedData.concat(data);
+    // console.log(combinedData);
   }
   //   console.log(fileExtension);
 });
 
+/*
+// Crear nuevo woorkbook
 const newWb = xlsx.utils.book_new();
+// Crear nuevo worksheet
 const newWs = xlsx.utils.json_to_sheet(combinedData);
+// Fusiona el worksheet dentro del workbook
 xlsx.utils.book_append_sheet(newWb, newWs, 'Combined Data');
+// Escribe el archivo y lo genera con el nombre
 xlsx.writeFile(newWb, 'NewCombinedData.xlsx');
 console.log('done!');
+*/
