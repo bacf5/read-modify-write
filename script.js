@@ -15,24 +15,30 @@ function readFileToJson(filename) {
   // leemos el range de las celdas usadas que hay en la sheet
   const range = xlsx.utils.decode_range(ws['!ref']);
   //   console.log(range) ---> { s: { c: 0, r: 0 }, e: { c: 8, r: 43 } }
+
   // loop de guías entregas
-  let guias = [];
+  let numGuias = [];
   for (let rowNum = rangeAwb.s.r; rowNum <= range.e.r; rowNum++) {
     const awb = ws[xlsx.utils.encode_cell({ r: rowNum, c: 1 })];
+    let obj = {};
     if (awb === undefined) {
     } else {
-      //   console.log(awb.v);
-      guias.push(awb.v);
+      // console.log(awb['v']);
+      obj = awb['v'];
+      numGuias.push(obj);
+      // numGuias.push(awb.v);
     }
-    // return guias;
+    // console.log(numGuias);
   }
-  const awbArray = guias.flat(2);
-  console.log(awbArray);
+  const dataFilter = numGuias.filter((guia) => guia !== undefined);
+  // console.log(dataFilter);
+  // console.log(numGuias);
+  const data = xlsx.utils.json_to_sheet(dataFilter);
+  console.log(data);
+
   // le pasamos la data a la sheet
-  const data = xlsx.utils.aoa_to_sheet();
-  //   console.log(data);
   // returneamos la data
-  return awbArray;
+  return data;
 }
 
 let combinedData = [];
@@ -57,7 +63,6 @@ files.forEach((file) => {
   }
   //   console.log(fileExtension);
 });
-
 /*
 // Crear nuevo woorkbook
 const newWb = xlsx.utils.book_new();
