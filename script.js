@@ -20,25 +20,23 @@ function readFileToJson(filename) {
   let numGuias = [];
   for (let rowNum = rangeAwb.s.r; rowNum <= range.e.r; rowNum++) {
     const awb = ws[xlsx.utils.encode_cell({ r: rowNum, c: 1 })];
-    let obj = {};
+
     if (awb === undefined) {
     } else {
-      // console.log(awb['v']);
-      obj = awb['v'];
-      numGuias.push(obj);
-      // numGuias.push(awb.v);
+      // console.log(awb.v);
+      numGuias.push(awb.v);
     }
-    // console.log(numGuias);
   }
-  const dataFilter = numGuias.filter((guia) => guia !== undefined);
-  // console.log(dataFilter);
   // console.log(numGuias);
-  const data = xlsx.utils.json_to_sheet(dataFilter);
-  console.log(data);
+
+  return numGuias;
+
+  // const data = xlsx.utils.json_to_sheet(dataFilter);
+  // console.log(data);
 
   // le pasamos la data a la sheet
   // returneamos la data
-  return data;
+  // return data;
 }
 
 let combinedData = [];
@@ -57,13 +55,14 @@ files.forEach((file) => {
     // console.log(fullFilePath);
     // leer el archivo para sacar la data
     const data = readFileToJson(fullFilePath);
+    console.log(data);
     // combinar la data en un solo array
     combinedData = combinedData.concat(data);
-    // console.log(combinedData);
   }
+  return combinedData;
   //   console.log(fileExtension);
 });
-/*
+
 // Crear nuevo woorkbook
 const newWb = xlsx.utils.book_new();
 // Crear nuevo worksheet
@@ -73,4 +72,3 @@ xlsx.utils.book_append_sheet(newWb, newWs, 'Combined Data');
 // Escribe el archivo y lo genera con el nombre
 xlsx.writeFile(newWb, 'NewCombinedData.xlsx');
 console.log('done!');
-*/

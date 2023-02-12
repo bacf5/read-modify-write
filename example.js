@@ -15,8 +15,8 @@ const axios = require('axios');
 
   /* flatten objects */
   const rows = prez.map((row) => ({
-    name: row.name.first + ' ' + row.name.last,
-    birthday: row.bio.birthday,
+    name: orow.name.first + ' ' + row.name.last,
+    birthday: row.bi.birthday,
   }));
   //   console.log(rows);
   /* generate worksheet and workbook */
